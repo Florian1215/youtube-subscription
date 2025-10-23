@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "YouTube Subscriptions Manager",
+  "version": "0.1.0",
+  "description": "Gère tes abonnements YouTube directement dans Firefox et ouvre les nouvelles vidéos automatiquement.",
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "32": "icons/icon.svg",
+      "64": "icons/icon.svg"
+    }
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "activeTab",
+    "https://www.youtube.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["youtubeContent.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
