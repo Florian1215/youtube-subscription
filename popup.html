@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Abonnements YouTube</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header>
+    <span class="title">Abonnements YouTube</span>
+    <button id="refresh" title="Vérifier les nouvelles vidéos">↻</button>
+  </header>
+
+  <section id="status-message" class="status hidden"></section>
+
+  <section id="context-section" class="card hidden">
+    <h2>Page actuelle</h2>
+    <div id="context-content"></div>
+  </section>
+
+  <section id="search-section" class="card">
+    <h2>Rechercher / ajouter</h2>
+    <form id="search-form" novalidate>
+      <input id="search-input" type="text" placeholder="Rechercher une chaîne" autocomplete="off">
+      <button id="add-button" type="button" title="Ajouter cette chaîne">+</button>
+    </form>
+    <p class="hint">Le + ajoute la chaîne saisie, sinon tape pour filtrer tes abonnements.</p>
+    <div id="add-error" class="error hidden"></div>
+  </section>
+
+  <section id="subscriptions-section" class="card">
+    <div class="subscriptions-header">
+      <h2>Mes abonnements</h2>
+      <label class="sort-control" for="sort-select">
+        <select id="sort-select">
+          <option value="latest">Dernières vidéos</option>
+          <option value="alpha">Ordre alphabétique</option>
+        </select>
+      </label>
+    </div>
+    <ul id="subscriptions-list"></ul>
+    <p id="empty-message" class="hint hidden">Aucun abonnement pour l'instant.</p>
+  </section>
+
+  <template id="subscription-template">
+    <li class="subscription">
+      <div class="subscription-main">
+        <span class="subscription-name"></span>
+        <span class="subscription-meta"></span>
+      </div>
+      <div class="subscription-actions">
+        <button class="reverse hidden" title="Inverser l'ordre (playlists)">⇅</button>
+        <button class="remove" title="Supprimer">✕</button>
+      </div>
+    </li>
+  </template>
+
+  <template id="context-template">
+    <div class="context-entry">
+      <div class="context-details"></div>
+      <button class="context-action"></button>
+    </div>
+  </template>
+
+  <script src="popup.js"></script>
+</body>
+</html>
