@@ -70,6 +70,29 @@ function formatPlaylistSubscriptionName(playlistName, channelName) {
   return cleanPlaylist || cleanChannel || '';
 }
 
+async function checkIfShort(videoId) {
+  try {
+    const url = `https://www.youtube.com/watch?v=${videoId}`;
+    const response = await fetch(url, {
+      method: 'HEAD',
+      redirect: 'manual'
+    });
+    
+    if (response.type === 'opaqueredirect' || (response.status >= 300 && response.status < 400)) {
+      const location = response.headers.get('location');
+      if (location && location.includes('/shorts/')) {
+        return true;
+      }
+    }
+    
+    const fullResponse = await fetch(url);
+    const html = await fullResponse.text();
+    return html.includes('"shortFormVideoRenderer"') || html.includes('/shorts/');
+  } catch (error) {
+    return false;
+  }
+}
+
 async function fetchFeed(subscription) {
   const url = subscription.type === 'channel'
     ? `https://www.youtube.com/feeds/videos.xml?channel_id=${subscription.id}`
@@ -85,18 +108,26 @@ async function fetchFeed(subscription) {
     throw new Error('Flux YouTube invalide');
   }
   const entries = Array.from(xml.querySelectorAll('entry'));
-  const videos = entries.map((entry) => {
+  const videos = [];
+  
+  for (const entry of entries) {
     const idNode = entry.querySelector('yt\\:videoId, videoId');
     const titleNode = entry.querySelector('title');
     const publishedNode = entry.querySelector('published');
     const videoId = idNode ? idNode.textContent : null;
-    return {
+    
+    if (!videoId) continue;
+    
+    const isShort = await checkIfShort(videoId);
+    if (isShort) continue;
+    
+    videos.push({
       id: videoId,
       title: titleNode ? titleNode.textContent : '',
       publishedAt: publishedNode ? publishedNode.textContent : null,
-      url: videoId ? `https://www.youtube.com/watch?v=${videoId}` : null
-    };
-  }).filter((video) => Boolean(video.id));
+      url: `https://www.youtube.com/watch?v=${videoId}`
+    });
+  }
 
   let name = subscription.name;
   let owner = subscription.channelName || null;
