@@ -1,45 +1,45 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Abonnements YouTube</title>
+  <title>YouTube Subscriptions</title>
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <header>
-    <span class="title">Abonnements YouTube</span>
-    <button id="refresh" title="Vérifier les nouvelles vidéos">↻</button>
+    <span class="title">YouTube Subscriptions</span>
+    <button id="refresh" title="Check for new videos">↻</button>
   </header>
 
   <section id="status-message" class="status hidden"></section>
 
   <section id="context-section" class="card hidden">
-    <h2>Page actuelle</h2>
+    <h2>Current Page</h2>
     <div id="context-content"></div>
   </section>
 
   <section id="search-section" class="card">
-    <h2>Rechercher / ajouter</h2>
+    <h2>Search / Add</h2>
     <form id="search-form" novalidate>
-      <input id="search-input" type="text" placeholder="Rechercher une chaîne" autocomplete="off">
-      <button id="add-button" type="button" title="Ajouter cette chaîne">+</button>
+      <input id="search-input" type="text" placeholder="Search for a channel" autocomplete="off">
+      <button id="add-button" type="button" title="Add this channel">+</button>
     </form>
-    <p class="hint">Le + ajoute la chaîne saisie, sinon tape pour filtrer tes abonnements.</p>
+    <p class="hint">The + adds the entered channel, otherwise type to filter your subscriptions.</p>
     <div id="add-error" class="error hidden"></div>
   </section>
 
   <section id="subscriptions-section" class="card">
     <div class="subscriptions-header">
-      <h2>Mes abonnements</h2>
+      <h2>My Subscriptions</h2>
       <label class="sort-control" for="sort-select">
         <select id="sort-select">
-          <option value="latest">Dernières vidéos</option>
-          <option value="alpha">Ordre alphabétique</option>
+          <option value="latest">Latest Videos</option>
+          <option value="alpha">Alphabetical Order</option>
         </select>
       </label>
     </div>
     <ul id="subscriptions-list"></ul>
-    <p id="empty-message" class="hint hidden">Aucun abonnement pour l'instant.</p>
+    <p id="empty-message" class="hint hidden">No subscriptions yet.</p>
   </section>
 
   <template id="subscription-template">
@@ -49,8 +49,8 @@
         <span class="subscription-meta"></span>
       </div>
       <div class="subscription-actions">
-        <button class="reverse hidden" title="Inverser l'ordre (playlists)">⇅</button>
-        <button class="remove" title="Supprimer">✕</button>
+        <button class="reverse hidden" title="Reverse order (playlists)">⇅</button>
+        <button class="remove" title="Remove">✕</button>
       </div>
     </li>
   </template>

@@ -1,7 +1,7 @@
 const api = typeof browser !== 'undefined' ? browser : chrome;
 const SUBSCRIPTIONS_KEY = 'subscriptions';
-const EMPTY_MESSAGE = "Aucun abonnement pour l'instant.";
-const NO_RESULTS_MESSAGE = 'Aucun abonnement ne correspond à ta recherche.';
+const EMPTY_MESSAGE = "No subscriptions yet.";
+const NO_RESULTS_MESSAGE = 'No subscriptions match your search.';
 const state = {
   subscriptions: {},
   context: null,
@@ -71,7 +71,7 @@ async function loadSubscriptions() {
       state.subscriptions = subs;
     }
   } catch (error) {
-    showStatus(`Erreur de chargement des abonnements: ${error.message || error}`, { error: true, persist: true });
+    showStatus(`Error loading subscriptions: ${error.message || error}`, { error: true, persist: true });
   }
 }
 
@@ -138,16 +138,16 @@ function renderContext() {
     const details = clone.querySelector('.context-details');
     const action = clone.querySelector('.context-action');
     details.textContent = entry.type === 'channel'
-      ? `Chaîne: ${entry.name}`
+      ? `Channel: ${entry.name}`
       : `Playlist: ${entry.name}`;
     const key = makeKey(entry.type, entry.id);
     const subscribed = Boolean(state.subscriptions[key]);
     if (subscribed) {
-      action.textContent = entry.type === 'channel' ? 'Abonné' : 'Playlist suivie';
+      action.textContent = entry.type === 'channel' ? 'Subscribed' : 'Playlist followed';
       action.classList.add('subscribed');
       action.disabled = true;
     } else {
-      action.textContent = entry.type === 'channel' ? "S'abonner" : 'Suivre la playlist';
+      action.textContent = entry.type === 'channel' ? "Subscribe" : 'Follow playlist';
       action.addEventListener('click', async () => {
         await subscribeFromContext(entry);
       });
@@ -191,7 +191,7 @@ function renderSubscriptions() {
     nameEl.textContent = subscription.name;
     nameEl.setAttribute('role', 'button');
     nameEl.setAttribute('tabindex', '0');
-    nameEl.title = 'Ouvrir sur YouTube';
+    nameEl.title = 'Open on YouTube';
     const openHandler = () => openSubscriptionTarget(subscription);
     nameEl.addEventListener('click', openHandler);
     nameEl.addEventListener('keydown', (event) => {
@@ -223,7 +223,7 @@ function renderSubscriptions() {
 
 async function subscribeFromContext(entry) {
   try {
-    showStatus("Ajout de l'abonnement…");
+    showStatus("Adding subscription…");
     const response = await api.runtime.sendMessage({
       type: 'subscribe',
       details: {
@@ -242,12 +242,12 @@ async function subscribeFromContext(entry) {
       }
       renderContext();
       renderSubscriptions();
-      showStatus(alreadySubscribed ? `${subscription.name} est déjà suivi` : `${subscription.name} est ajouté`, { success: true });
+      showStatus(alreadySubscribed ? `${subscription.name} is already followed` : `${subscription.name} added`, { success: true });
     } else if (response && !response.ok) {
       throw new Error(response.error);
     }
   } catch (error) {
-    showStatus(error.message || "Impossible d'ajouter l'abonnement", { error: true, persist: true });
+    showStatus(error.message || "Unable to add subscription", { error: true, persist: true });
   }
 }
 
@@ -257,7 +257,7 @@ async function handleAddFromSearch() {
   if (!value) {
     const contextEntry = selectAutoContextEntry();
     if (!contextEntry) {
-      setAddError('Indique une chaîne ou une URL à ajouter.');
+      setAddError('Specify a channel or URL to add.');
       return;
     }
     clearAddError();
@@ -283,7 +283,7 @@ async function handleAddFromSearch() {
       state.subscriptions[subscriptionKey] = subscription;
       renderSubscriptions();
       renderContext();
-      showStatus(alreadySubscribed ? `${subscription.name} est déjà suivi` : `${subscription.name} est ajouté`);
+      showStatus(alreadySubscribed ? `${subscription.name} is already followed` : `${subscription.name} added`);
       clearAddError();
       if (!alreadySubscribed) {
         state.searchQuery = subscription.name;
@@ -292,7 +292,7 @@ async function handleAddFromSearch() {
       }
     }
   } catch (error) {
-    setAddError(error.message || 'Ajout impossible');
+    setAddError(error.message || 'Unable to add');
   } finally {
     setSearchControlsDisabled(false);
   }
@@ -358,10 +358,10 @@ async function removeSubscription(subscription) {
       delete state.subscriptions[subscriptionKey];
       renderSubscriptions();
       renderContext();
-      showStatus(`${subscription.name} est supprimé`);
+      showStatus(`${subscription.name} removed`);
     }
   } catch (error) {
-    showStatus(error.message || 'Suppression impossible', { error: true, persist: true });
+    showStatus(error.message || 'Unable to remove', { error: true, persist: true });
   }
 }
 
@@ -377,47 +377,47 @@ async function toggleReverse(subscription) {
       updated.key = subscriptionKey;
       state.subscriptions[subscriptionKey] = updated;
       renderSubscriptions();
-      showStatus(`${updated.name}: lecture ${updated.reverse ? 'ancienne → nouvelle' : 'nouvelle → ancienne'}`);
+      showStatus(`${updated.name}: playback ${updated.reverse ? 'oldest → newest' : 'newest → oldest'}`);
     }
   } catch (error) {
-    showStatus(error.message || 'Action impossible', { error: true, persist: true });
+    showStatus(error.message || 'Action failed', { error: true, persist: true });
   }
 }
 
 async function runManualCheck() {
   try {
-    showStatus('Recherche des nouvelles vidéos…');
+    showStatus('Checking for new videos…');
     const response = await api.runtime.sendMessage({ type: 'check-now' });
     if (response && response.ok) {
       const { opened, skipped } = response.result;
       if (skipped) {
-        showStatus('Une vérification est déjà en cours');
+        showStatus('A check is already in progress');
         return;
       }
       if (!opened || !opened.length) {
-        showStatus('Aucune nouvelle vidéo trouvée');
+        showStatus('No new videos found');
       } else {
         const total = opened.reduce((sum, item) => sum + item.videos.length, 0);
-        showStatus(`${total} nouvelle(s) vidéo(s) ouverte(s)`);
+        showStatus(`${total} new video(s) opened`);
       }
       await loadSubscriptions();
       renderSubscriptions();
     }
   } catch (error) {
-    showStatus(error.message || 'Vérification impossible', { error: true, persist: true });
+    showStatus(error.message || 'Unable to check', { error: true, persist: true });
   }
 }
 
 function buildMeta(subscription) {
   const parts = [];
-  parts.push(subscription.type === 'channel' ? 'Chaîne' : 'Playlist');
+  parts.push(subscription.type === 'channel' ? 'Channel' : 'Playlist');
   if (subscription.type === 'playlist' && subscription.reverse) {
-    parts.push('ordre inversé');
+    parts.push('reversed order');
   }
   if (subscription.latestVideoPublishedAt) {
     const relPublished = formatRelative(subscription.latestVideoPublishedAt);
-    if (relPublished !== 'inconnue') {
-      parts.push(`dernière vidéo ${relPublished}`);
+    if (relPublished !== 'unknown') {
+      parts.push(`last video ${relPublished}`);
     }
   }
   return parts.join(' · ');
@@ -425,32 +425,32 @@ function buildMeta(subscription) {
 
 function formatRelative(input) {
   if (input === null || input === undefined) {
-    return 'inconnue';
+    return 'unknown';
   }
   let timestamp = input;
   if (typeof timestamp === 'string') {
     timestamp = Date.parse(timestamp);
   }
   if (!Number.isFinite(timestamp)) {
-    return 'inconnue';
+    return 'unknown';
   }
   const diff = Date.now() - timestamp;
   if (!Number.isFinite(diff) || diff <= 0) {
-    return 'à l\'instant';
+    return 'just now';
   }
   if (diff < 60_000) {
-    return 'il y a quelques secondes';
+    return 'a few seconds ago';
   }
   const minutes = Math.round(diff / 60_000);
   if (minutes < 60) {
-    return `il y a ${minutes} min`;
+    return `${minutes} min ago`;
   }
   const hours = Math.round(diff / 3_600_000);
   if (hours < 24) {
-    return `il y a ${hours} h`;
+    return `${hours} h ago`;
   }
   const days = Math.round(diff / 86_400_000);
-  return `il y a ${days} j`;
+  return `${days} d ago`;
 }
 
 function setSearchControlsDisabled(disabled) {

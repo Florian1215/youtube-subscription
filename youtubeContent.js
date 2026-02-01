@@ -149,7 +149,7 @@ async function refreshSubscriptionState() {
     const stored = await api.storage.local.get({ [SUBSCRIPTIONS_KEY]: {} });
     subscribeState.map = stored[SUBSCRIPTIONS_KEY] || {};
   } catch (error) {
-    console.error('Impossible de charger les abonnements', error);
+    console.error('Unable to load subscriptions', error);
     subscribeState.map = {};
   }
 }
@@ -733,7 +733,7 @@ function onSubscribeButtonClick(event, renderer, channelId) {
   const info = buildChannelInfo(renderer, channelId);
 
   if (!info.channelId && !info.handle && !info.name) {
-    console.warn('Impossible d\'identifier la chaîne depuis le bouton YouTube.', renderer);
+    console.warn('Unable to identify channel from YouTube button.', renderer);
     return;
   }
 
@@ -762,11 +762,11 @@ function onSubscribeButtonClick(event, renderer, channelId) {
         }
         await refreshSubscriptionState();
       } else if (response && !response.ok) {
-        throw new Error(response.error || 'Erreur inconnue');
+        throw new Error(response.error || 'Unknown error');
       }
     })
     .catch((error) => {
-      console.error('Impossible d\'ajouter la chaîne via le bouton', error);
+      console.error('Unable to add channel via button', error);
     })
     .finally(() => {
       setSubscribeControlBusy(renderer, button, false);
@@ -803,7 +803,7 @@ function setSubscribeControlBusy(renderer, button, busy) {
 
   if (button) {
     if (busy) {
-      setButtonLabel(button, 'Ajout…');
+      setButtonLabel(button, 'Adding…');
       if (typeof button.disabled !== 'undefined') {
         button.disabled = true;
       }
@@ -822,7 +822,7 @@ function setSubscribeControlBusy(renderer, button, busy) {
 function updateSubscribeButton(renderer, button, channelId) {
   const subscribed = channelId ? isChannelSubscribed(channelId) : false;
   if (button) {
-    const label = subscribed ? 'Abonné' : "S'abonner";
+    const label = subscribed ? 'Subscribed' : "Subscribe";
     setButtonLabel(button, label);
     button.setAttribute('aria-label', label);
     button.setAttribute('aria-pressed', subscribed ? 'true' : 'false');
@@ -1104,5 +1104,5 @@ api.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 initSubscriptionIntegration().catch((error) => {
-  console.error('Erreur init abonnement personnalisé', error);
+  console.error('Custom subscription initialization error', error);
 });
