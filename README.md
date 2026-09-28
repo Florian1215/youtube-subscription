@@ -1,19 +1,19 @@
 # YouTube Subscriptions Manager Extension
 
-Extension Firefox qui permet de gérer les abonnements YouTube directement depuis le navigateur et d'ouvrir automatiquement les nouvelles vidéos.
+Firefox extension that allows you to manage YouTube subscriptions directly from the browser and automatically open new videos.
 
-## Fonctionnalités principales
+## Main Features
 
-- Barre de recherche pour filtrer instantanément les abonnements (chaînes et playlists).
-- Ajoute un abonnement depuis l'extension en saisissant simplement le nom de la chaîne (sans `@`), ou depuis une page YouTube via le bouton `S'abonner`.
-- Supprime un abonnement ou inverse l'ordre de lecture pour les playlists.
-- Vérifie les nouveautés manuellement ou automatiquement lorsque la page `https://www.youtube.com/` est visitée et ouvre chaque nouvelle vidéo dans un nouvel onglet.
-- Affiche le nombre de vidéos fraichement ouvertes sur le badge rouge de l'icône (remis à zéro après ouverture).
-- Un clic sur le nom dans la liste ouvre directement la chaîne ou la playlist, avec indication relative de la dernière vidéo publiée.
-- Remplace le bouton `S'abonner` de YouTube (recherche, chaîne, vidéo) pour ajouter la chaîne à l'extension et affiche `Abonné` lorsque déjà suivi.
+- Search bar to instantly filter subscriptions (channels and playlists).
+- Add a subscription from the extension by simply entering the channel name (without `@`), or from a YouTube page via the `Subscribe` button.
+- Remove a subscription or reverse the playback order for playlists.
+- Check for updates manually or automatically when the `https://www.youtube.com/` page is visited and opens each new video in a new tab.
+- Displays the number of newly opened videos on the icon's red badge (reset after opening).
+- Clicking on a name in the list directly opens the channel or playlist, with a relative indication of the last published video.
+- Replaces YouTube's `Subscribe` button (search, channel, video) to add the channel to the extension and displays `Subscribed` when already followed.
 
-## Remarques
+## Notes
 
-- L'extension stocke les abonnements dans `browser.storage.local`; ils ne sont pas partagés avec le fichier `youtube.json` du script Python.
-- Le suivi des relais se base sur les flux publics `https://www.youtube.com/feeds/videos.xml`.
-- Le handle `@channel` est résolu automatiquement pour récupérer l'identifiant de chaîne.
+- The extension stores subscriptions in `browser.storage.local`; they are not shared with the Python script's `youtube.json` file.
+- Subscription tracking is based on public feeds `https://www.youtube.com/feeds/videos.xml`.
+- The `@channel` handle is automatically resolved to retrieve the channel identifier.
