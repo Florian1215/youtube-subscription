@@ -5,7 +5,7 @@
   "description": "Manage your YouTube subscriptions directly in Firefox and automatically open new videos.",
   "browser_specific_settings": {
     "gecko": {
-      "id": "youtube-subscriptions-manager@florian1215",
+      "id": "{e6a398e0-72d7-4e99-96a6-d01172945119}",
       "data_collection_permissions": {
         "required": ["none"]
       }
