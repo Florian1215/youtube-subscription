@@ -3,6 +3,14 @@
   "name": "YouTube Subscriptions Manager",
   "version": "1.1.2",
   "description": "Manage your YouTube subscriptions directly in Firefox and automatically open new videos.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "youtube-subscriptions-manager@florian1215",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
+    }
+  },
   "icons": {
     "48": "icons/icon.svg",
     "96": "icons/icon.svg"
